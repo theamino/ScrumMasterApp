@@ -4,7 +4,7 @@ import com.example.scrummaster.Classes.User;
 
 public class InteriorUser {
 
-    private User user;
+    private User user , selectedUser;
 
     private static final InteriorUser ourInstance = new InteriorUser();
 
@@ -21,5 +21,13 @@ public class InteriorUser {
 
     public User getUser() {
         return user;
+    }
+
+    public User getSelectedUser() {
+        return selectedUser;
+    }
+
+    public void setSelectedUser(User selectedUser) {
+        this.selectedUser = selectedUser;
     }
 }

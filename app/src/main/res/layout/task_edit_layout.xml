@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <Button
+        android:id="@+id/submit_edit_task"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="9dp"
+        android:layout_marginEnd="44dp"
+        android:text="Submit"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_desc_task" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="74dp"
+        android:layout_marginBottom="9dp"
+        android:text="status"
+        app:layout_constraintBottom_toTopOf="@+id/consumed_time_btn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Spinner
+        android:id="@+id/spinner_edit_task"
+        android:layout_width="226dp"
+        android:layout_height="21dp"
+        android:layout_marginStart="11dp"
+        android:layout_marginTop="74dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="7dp"
+        app:layout_constraintBottom_toTopOf="@+id/consumed_time_btn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/textView2"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/consumed_time_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="26dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Consumed Time"
+        app:layout_constraintEnd_toStartOf="@+id/predicted_time_btn"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_edit_task" />
+
+    <Button
+        android:id="@+id/predicted_time_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="32dp"
+        android:text="Predicted Time"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/consumed_time_btn"
+        app:layout_constraintTop_toBottomOf="@+id/spinner_edit_task" />
+
+    <EditText
+        android:id="@+id/edit_text_desc_task"
+        android:layout_width="279dp"
+        android:layout_height="217dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="7dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="10dp"
+        android:ems="10"
+        android:inputType="textMultiLine"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/consumed_time_btn" />
+
+    <Button
+        android:id="@+id/cancel_edit_task"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="84dp"
+        android:layout_marginTop="8dp"
+        android:text="@android:string/cancel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_desc_task" />
+</android.support.constraint.ConstraintLayout>

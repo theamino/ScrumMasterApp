@@ -24,6 +24,18 @@ public class Project {
         this.last_update = last_update;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setProgress_percent(int progress_percent) {
+        this.progress_percent = progress_percent;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getName() {
         return name;
     }

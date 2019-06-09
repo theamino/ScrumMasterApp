@@ -35,12 +35,13 @@ import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener , UIRefresher {
     Context context = this;
     RecyclerView mainRecyclerView;
     RecyclerView.LayoutManager layoutManager;
     List<Project> projectList = new ArrayList<Project>();
-    MainRecyclerViewAdapter adapter;
+    UIRefresher uiRefresher;
+    FragmentRecyclerAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         mainRecyclerView = findViewById(R.id.main_recycler_view);
-
+        uiRefresher = this;
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,6 +122,11 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    @Override
+    public void refresh() {
+
+    }
+
     public class LoadProjects extends AsyncTask<Void , Void , Void> {
 
         List<Project> projectList = new ArrayList<Project>();
@@ -133,7 +139,7 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            adapter = new MainRecyclerViewAdapter(context , projectList , new ArrayList<Task>() , new ArrayList<User>() , V.MainActivityRecyclerAdapter.PROJECT);
+            adapter = new FragmentRecyclerAdapter(context , projectList , new ArrayList<Task>() , new ArrayList<User>() , V.MainActivityRecyclerAdapter.PROJECT , uiRefresher);
             layoutManager = new LinearLayoutManager(context);
             mainRecyclerView.setLayoutManager(layoutManager);
             mainRecyclerView.setAdapter(adapter);

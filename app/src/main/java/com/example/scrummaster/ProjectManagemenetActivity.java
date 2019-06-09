@@ -1,9 +1,11 @@
 package com.example.scrummaster;
 
+import android.os.AsyncTask;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
@@ -19,7 +21,14 @@ import android.view.ViewGroup;
 
 import android.widget.TextView;
 
-public class ProjectManagemenetActivity extends AppCompatActivity {
+import com.example.scrummaster.Classes.Project;
+import com.example.scrummaster.Classes.Task;
+import com.example.scrummaster.Classes.User;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class ProjectManagemenetActivity extends AppCompatActivity implements UIRefresher {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -30,7 +39,7 @@ public class ProjectManagemenetActivity extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-
+    public static UIRefresher uiRefresher;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -40,6 +49,7 @@ public class ProjectManagemenetActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_project_managemenet);
+        uiRefresher = this;
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -90,6 +100,11 @@ public class ProjectManagemenetActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void refresh() {
+
+    }
+
     /**
      * A placeholder fragment containing a simple view.
      */
@@ -118,9 +133,49 @@ public class ProjectManagemenetActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_project_managemenet, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+            View rootView = null;
+            if(getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
+                rootView = inflater.inflate(R.layout.fragment_project_managemenet, container, false);
+                //TextView textView = (TextView) rootView.findViewById(R.id.section_label);
+                //textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+                RecyclerView recyclerView;
+                recyclerView = rootView.findViewById(R.id.fragment_recycler);
+                //TODO : get project Tasks
+
+                new AsyncTask<Void , Void , Void>() {
+
+                    @Override
+                    protected void onPreExecute() {
+                        super.onPreExecute();
+                        List<Task> tasks = null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Void aVoid) {
+                        super.onPostExecute(aVoid);
+                    }
+
+                    @Override
+                    protected Void doInBackground(Void... voids) {
+                        return null;
+                    }
+                }.execute();
+                List<Task> tasks = null;
+                FragmentRecyclerAdapter adapter = new FragmentRecyclerAdapter(getContext(), new ArrayList<Project>(), tasks, new ArrayList<User>(), V.MainActivityRecyclerAdapter.TASK , uiRefresher);
+                recyclerView.setAdapter(adapter);
+            } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
+                rootView = inflater.inflate(R.layout.fragment_project_managemenet, container, false);
+                //TextView textView = (TextView) rootView.findViewById(R.id.section_label);
+                //textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
+                RecyclerView recyclerView;
+                recyclerView = rootView.findViewById(R.id.fragment_recycler);
+                //TODO : get project collaborators
+                List<User> users = null;
+                FragmentRecyclerAdapter adapter = new FragmentRecyclerAdapter(getContext() , new ArrayList<Project>() , new ArrayList<Task>() , users , V.MainActivityRecyclerAdapter.USER , uiRefresher);
+                recyclerView.setAdapter(adapter);
+            } else {
+
+            }
             return rootView;
         }
     }

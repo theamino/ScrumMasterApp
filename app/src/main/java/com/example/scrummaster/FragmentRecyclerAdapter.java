@@ -15,22 +15,24 @@ import com.example.scrummaster.Classes.Task;
 import com.example.scrummaster.Classes.User;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
-public class MainRecyclerViewAdapter extends RecyclerView.Adapter {
+public class FragmentRecyclerAdapter extends RecyclerView.Adapter {
 
     Context context;
     List<Project> projectList = new ArrayList<Project>();
-    List<Task> taskList = new ArrayList<Task>();
+    List<Task> taskList = new ArrayList<>();
     List<User> userList = new ArrayList<User>();
     int type;
-
-    public MainRecyclerViewAdapter(Context context, List<Project> projectList, List<Task> taskList, List<User> userList, int type) {
+    UIRefresher uiRefresher;
+    public FragmentRecyclerAdapter(Context context, List<Project> projectList, List<Task> taskList, List<User> userList, int type , UIRefresher uiRefresher) {
         this.context = context;
         this.projectList = projectList;
         this.taskList = taskList;
         this.userList = userList;
         this.type = type;
+        this.uiRefresher = uiRefresher;
     }
 
     @NonNull
@@ -72,7 +74,10 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter {
             masterDetailImageViewHolder.detailTextView.setText("Status : " + taskList.get(i).getStatus());
             masterDetailImageViewHolder.itemView.setOnClickListener(onClick(i));
         } else if (type == V.MainActivityRecyclerAdapter.USER) {
-
+            masterDetailImageViewHolder.imageView.setImageResource(R.drawable.scrum_master);
+            masterDetailImageViewHolder.masterTextView.setText(userList.get(i).getUser_name());
+            masterDetailImageViewHolder.detailTextView.setText("Name : " + userList.get(i).getFirst_name() + " " + userList.get(i).getLast_name()
+                    + " Age : " +  String.valueOf((new Date(System.currentTimeMillis())).getYear() - userList.get(i).getBirthDate().getYear()));
         }
     }
 
@@ -85,7 +90,10 @@ public class MainRecyclerViewAdapter extends RecyclerView.Adapter {
                     context.startActivity(new Intent(context.getApplicationContext() , ProjectManagemenetActivity.class));
                 } else if (type == V.MainActivityRecyclerAdapter.TASK) {
                     InteriorTask.getInstance().setTask(taskList.get(i));
-                    //new TaskEditAlertDialog(context.getApplicationContext() , false ).show();
+                    new TaskEditAlertDialog(context.getApplicationContext() , false , uiRefresher).show();
+                } else if (type == V.MainActivityRecyclerAdapter.USER) {
+                    InteriorUser.getInstance().setSelectedUser(userList.get(i));
+                    new UserShowDialog(context.getApplicationContext() , uiRefresher).show();
                 }
             }
         };
