@@ -53,7 +53,6 @@
         android:layout_marginTop="10dp"
         android:ems="10"
         android:inputType="textPersonName"
-        android:text="Name"
         app:layout_constraintStart_toEndOf="@+id/imageView2"
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
@@ -71,15 +70,13 @@
     <EditText
         android:id="@+id/projectDescriptionFragment"
         android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_height="200dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="11dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="13dp"
-        android:layout_marginBottom="26dp"
         android:ems="10"
         android:gravity="top"
         android:inputType="textMultiLine"
-        app:layout_constraintBottom_toTopOf="@+id/submit_project"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView5" />
@@ -88,19 +85,23 @@
         android:id="@+id/submit_project"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="27dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="112dp"
-        android:layout_marginBottom="160dp"
         android:text="Submit"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/cancel_project"
+        app:layout_constraintTop_toBottomOf="@+id/projectDescriptionFragment" />
 
     <Button
         android:id="@+id/cancel_project"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="96dp"
-        android:layout_marginBottom="160dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="27dp"
         android:text="@android:string/cancel"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toStartOf="@+id/submit_project"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/projectDescriptionFragment" />
 </android.support.constraint.ConstraintLayout>

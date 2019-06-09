@@ -54,7 +54,7 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                new NewProjectDialog(context , uiRefresher).show();
             }
         });
 
@@ -197,11 +197,11 @@ public class MainActivity extends AppCompatActivity
 
         protected String doInBackground(String... args) {
             List<NameValuePair> params = new ArrayList<NameValuePair>();
-            JSONObject json = jParser.makeHttpRequest(Constants.url_all_units, "GET", params);
+            //JSONObject json = jParser.makeHttpRequest(Constants.url_all_units, "GET", params);
 
-            Log.d("All Units: ", json.toString());
+            //Log.d("All Units: ", json.toString());
 
-            try {
+            /*try {
                 int success = json.getInt(Constants.TAG_SUCCESS);
 
                 if (success == 1) {
@@ -222,7 +222,7 @@ public class MainActivity extends AppCompatActivity
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-            }
+            }*/
 
             return null;
         }

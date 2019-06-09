@@ -1,5 +1,6 @@
 package com.example.scrummaster;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -66,13 +67,12 @@ public class ProjectManagemenetActivity extends AppCompatActivity implements UIR
 
         mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
-
+        Context context = this;
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                new TaskEditAlertDialog(ProjectManagemenetActivity.this , true , uiRefresher).show();
             }
         });
 
