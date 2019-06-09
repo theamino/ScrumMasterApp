@@ -111,7 +111,7 @@ public class MainActivity extends AppCompatActivity
             //TODO : get data from php
             new LoadProjects().execute();
         } else if (id == R.id.nav_tasks) {
-
+            new LoadTasks().execute();
         } else if (id == R.id.nav_user_profile) {
 
         } else if (id == R.id.nav_manage) {
@@ -148,6 +148,31 @@ public class MainActivity extends AppCompatActivity
         @Override
         protected Void doInBackground(Void... strings) {
             projectList.add(new Project("aminoz" , "amin" , new Date(2009 , 10 ,13) , new ArrayList<Task>() , 50 , "hellow" , new Date()));
+            return null;
+        }
+    }
+
+    public class LoadTasks extends AsyncTask<Void , Void , Void> {
+
+        List<Task> taskList= new ArrayList<Task>();
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            adapter = new FragmentRecyclerAdapter(context , new ArrayList<Project>() , taskList , new ArrayList<User>() , V.MainActivityRecyclerAdapter.TASK , uiRefresher);
+            layoutManager = new LinearLayoutManager(context);
+            mainRecyclerView.setLayoutManager(layoutManager);
+            mainRecyclerView.setAdapter(adapter);
+        }
+
+        @Override
+        protected Void doInBackground(Void... strings) {
+            taskList.add(new Task("aminoz"  , new Date(2009 , 10 ,13) , new Date(2009 , 10 ,13) , "hellow"));
             return null;
         }
     }

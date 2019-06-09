@@ -19,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.scrummaster.Classes.Project;
@@ -174,6 +175,19 @@ public class ProjectManagemenetActivity extends AppCompatActivity implements UIR
                 FragmentRecyclerAdapter adapter = new FragmentRecyclerAdapter(getContext() , new ArrayList<Project>() , new ArrayList<Task>() , users , V.MainActivityRecyclerAdapter.USER , uiRefresher);
                 recyclerView.setAdapter(adapter);
             } else {
+                rootView = inflater.inflate(R.layout.fragment_edit_project, container, false);
+                Project project = InteriorProject.getInstance().getProject();
+                ((EditText)rootView.findViewById(R.id.project_name_fragment)).setText(project.getName());
+                ((EditText)rootView.findViewById(R.id.projectDescriptionFragment)).setText(project.getDescription());
+                ((EditText)rootView.findViewById(R.id.project_percent_fragment)).setText(String.valueOf(project.getProgress_percent()));
+
+                rootView.findViewById(R.id.submit_project).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //TODO: SEND TO PHP
+                    }
+                });
+
 
             }
             return rootView;

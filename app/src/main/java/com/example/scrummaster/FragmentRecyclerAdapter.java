@@ -40,11 +40,10 @@ public class FragmentRecyclerAdapter extends RecyclerView.Adapter {
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int i) {
         View view = null;
         switch (getItemViewType(i)) {
-            case V.MainActivityRecyclerAdapter.PROJECT:
+            default:
                 view = LayoutInflater.from(parent.getContext()).inflate(R.layout.text_image_list_item, parent, false);
                 return new MasterDetailImageViewHolder(view);
         }
-        return null;
     }
 
     @Override
@@ -56,8 +55,12 @@ public class FragmentRecyclerAdapter extends RecyclerView.Adapter {
                 setMasterDetailImageViewHolder(i , masterDetailImageViewHolder);
                 break;
             case V.MainActivityRecyclerAdapter.TASK:
+                masterDetailImageViewHolder = (MasterDetailImageViewHolder) viewHolder;
+                setMasterDetailImageViewHolder(i , masterDetailImageViewHolder);
                 break;
             case V.MainActivityRecyclerAdapter.USER:
+                masterDetailImageViewHolder = (MasterDetailImageViewHolder) viewHolder;
+                setMasterDetailImageViewHolder(i , masterDetailImageViewHolder);
                 break;
         }
     }
@@ -90,7 +93,7 @@ public class FragmentRecyclerAdapter extends RecyclerView.Adapter {
                     context.startActivity(new Intent(context.getApplicationContext() , ProjectManagemenetActivity.class));
                 } else if (type == V.MainActivityRecyclerAdapter.TASK) {
                     InteriorTask.getInstance().setTask(taskList.get(i));
-                    new TaskEditAlertDialog(context.getApplicationContext() , false , uiRefresher).show();
+                    new TaskEditAlertDialog(context, false , uiRefresher).show();
                 } else if (type == V.MainActivityRecyclerAdapter.USER) {
                     InteriorUser.getInstance().setSelectedUser(userList.get(i));
                     new UserShowDialog(context.getApplicationContext() , uiRefresher).show();

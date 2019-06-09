@@ -32,6 +32,7 @@ public class TaskEditAlertDialog extends Dialog implements DatePickerDialog.OnDa
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.task_edit_layout);
+        ((EditText) findViewById(R.id.edit_text_desc_task)).setText(InteriorTask.getInstance().getTask().getDescription());
         final DatePickerDialog.OnDateSetListener dateSetListener = this;
             spinner = findViewById(R.id.spinner_edit_task);
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(getContext(), android.R.layout.simple_spinner_item,
@@ -51,7 +52,7 @@ public class TaskEditAlertDialog extends Dialog implements DatePickerDialog.OnDa
                 @Override
                 public void onClick(View v) {
                     which = CONS;
-                    if (datePicker != null)
+                    if (datePicker == null)
                         datePicker = new DatePickerDialog(getContext(), dateSetListener, 2018, 10, 10);
                     datePicker.show();
                 }
