@@ -1,12 +1,16 @@
 package com.example.scrummaster;
 
+import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,6 +24,11 @@ import android.view.MenuItem;
 import com.example.scrummaster.Classes.Project;
 import com.example.scrummaster.Classes.Task;
 import com.example.scrummaster.Classes.User;
+
+import org.apache.http.NameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -137,5 +146,85 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    ProgressDialog pDialog;
+    JSONParser jParser = new JSONParser();
+    JSONArray units = null;
+    private ArrayList<Project> itemList;
+
+    class LoadAllUnits extends AsyncTask<String, String, String> {
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(MainActivity.this);
+            pDialog.setMessage("در حال بارگذاری لیست واحد ها لطفا صبر کنید...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();
+        }
+
+
+        protected String doInBackground(String... args) {
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            JSONObject json = jParser.makeHttpRequest(Constants.url_all_units, "GET", params);
+
+            Log.d("All Units: ", json.toString());
+
+            try {
+                int success = json.getInt(Constants.TAG_SUCCESS);
+
+                if (success == 1) {
+
+                    units = json.getJSONArray(Constants.TAG_UNITS);
+                    for (int i = 0; i < units.length(); i++) {
+                        JSONObject c = units.getJSONObject(i);
+
+                        String unitid = c.getString(Constants.TAG_UNITID);
+                        String num = c.getString(Constants.TAG_NUM);
+                        String voipnum = c.getString(Constants.TAG_VOIPNUM);
+                        String owner = c.getString(Constants.TAG_OWNER);
+                        //if (!unitid.equals(myunitid))
+                        {
+                           // itemList.add(new Project(Integer.parseInt(unitid), Integer.parseInt(num), owner, voipnum));
+                        }
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            return null;
+        }
+
+
+        protected void onPostExecute(String file_url) {
+            pDialog.dismiss();
+            if (itemList.size() > 0) {
+                runOnUiThread(new Runnable() {
+                    public void run() {
+                        //adapter = new MyRecyclerAdapter(itemList, InterCallList.this);
+                        //list.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+            } else {
+//        finish();
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setTitle("خطایی رخ داد");
+                builder.setMessage("واحدی یافت نشد. در صورت تکرار به مدیر ساختمان اطلاع دهید");
+                builder.setCancelable(false);
+                builder.setPositiveButton("تایید", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                });
+                builder.create();
+                builder.show();
+            }
+        }
+
+    }
 
 }
