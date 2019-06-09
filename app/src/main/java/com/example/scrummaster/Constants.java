@@ -6,6 +6,9 @@ public class Constants {
     public static final String TAG_TASKID = "task_id";
     public static final String TAG_ID = "id";
     public static final String TAG_USERID = "user_id";
+    public static final String TAG_USERNAME = "username";
+    public static final String TAG_PASSWORD = "password";
+    public static final String TAG_USER = "user";
     public static final String TAG_PROJECTNAME = "project_name";
     public static final String TAG_LASTUPDATE = "last_update";
     public static final String TAG_PROGRESSPERCENT = "progress_percent";
@@ -19,6 +22,7 @@ public class Constants {
     public static final String TAG_TASKS = "tasks";
     public static final String TAG_TASK = "task";
     public static final String TAG_USERS = "users";
+    public static final String TAG_SUCCESS = "success";
 
     //URLs
     public static final  String SERVERADDR = "http://192.168.1.1/";

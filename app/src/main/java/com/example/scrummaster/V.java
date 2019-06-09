@@ -6,4 +6,7 @@ public class V {
         public static final int TASK = 1;
         public static final int USER = 2;
     }
+    public static class Extras {
+        public static String userID = "USER_ID";
+    }
 }
