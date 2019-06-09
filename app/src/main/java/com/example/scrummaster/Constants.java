@@ -2,46 +2,41 @@ package com.example.scrummaster;
 
 public class Constants {
     // JSON Node names
-    public static final String TAG_UNITS = "units";
-    public static final String TAG_UNITID = "unitid";
-    public static final String TAG_VOIPNUMS = "voipnums";
-    public static final String TAG_USED = "used";
-    public static final String TAG_SUCCESS = "success";
-    public static final String TAG_UNIT = "unit";
-    public static final String TAG_NUM = "num";
-    public static final String TAG_VOIPNUM = "voipnum";
-    public static final String TAG_OWNER = "owner";
-    public static final String TAG_PASS = "pass";
-    public static final String TAG_TIMEOUT = "timeout";
-    public static final String TAG_ACCESS = "access";
-    public static final String TAG_ACCESS2 = "access2";
-    public static final String TAG_MOBVOIPNUM = "mobvoipnum";
-    public static final String TAG_MOBTIMEOUT = "mobtimeout";
-
+    public static final String TAG_PROJECTID = "project_id";
+    public static final String TAG_TASKID = "task_id";
+    public static final String TAG_ID = "id";
+    public static final String TAG_USERID = "user_id";
+    public static final String TAG_PROJECTNAME = "project_name";
+    public static final String TAG_LASTUPDATE = "last_update";
+    public static final String TAG_PROGRESSPERCENT = "progress_percent";
+    public static final String TAG_DESCRIPTION = "description";
+    public static final String TAG_CREATIONDATE = "creation_date";
+    public static final String TAG_TITLE = "title";
+    public static final String TAG_STATUS = "status";
+    public static final String TAG_PREDICTEDTIME = "predicted_time";
+    public static final String TAG_CONSUMEDTIME = "consumed_time";
+    public static final String TAG_PROJECT = "project";
+    public static final String TAG_TASKS = "tasks";
+    public static final String TAG_TASK = "task";
+    public static final String TAG_USERS = "users";
 
     //URLs
-    //uri to create unit
-    public static final String url_create_unit = "http://192.168.1.101/create_unit.php";
-    //    public static final String url_create_unit = "http://cobacodoorbellpanel.local/create_unit.php";
-    //url to get 2 free voipnum from server
-    public static final String url_get_voipnum = "http://192.168.1.101/get_voip_num.php";
-    //    public static final String url_get_voipnum = "http://cobacodoorbellpanel.local/get_voip_num.php";
-    //url to delete unit
-    public static final String url_delete_unit = "http://192.168.1.101/delete_unit.php";
-    //    public static final String url_delete_unit = "http://cobacodoorbellpanel.local/delete_unit.php";
-    //url to set voipnum status ("used" = 1 and "not used" = 0)
-    public static final String url_update_voipnum = "http://192.168.1.101/update_voipnum.php";
-    //    public static final String url_update_voipnum = "http://cobacodoorbellpanel.local/update_voipnum.php";
-    // single unit url
-    public static final String url_unit_detials = "http://192.168.1.101/get_unit_details.php";
-    //    public static final String url_unit_detials = "http://cobacodoorbellpanel.local/get_unit_details.php";
-    // url to update unit
-    public static final String url_update_unit = "http://192.168.1.101/update_unit.php";
-    //    public static final String url_update_unit = "http://cobacodoorbellpanel.local/update_unit.php";
-    //url to load units list
-    public static String url_all_units = "http://192.168.1.101/get_all_units.php";
-    //    public static String url_all_units = "http://cobacodoorbellpanel.local/get_all_units.php";
-    //url to authenticate
-    public static String url_auth_unit = "http://192.168.1.101/auth_unit.php";
-//    public static String url_auth_unit = "http://cobacodoorbellpanel.local/auth_unit.php";
+    public static final  String SERVERADDR = "http://192.168.1.1/";
+    public static final String assign_task = SERVERADDR + "assign_task.php";
+    public static final String assign_to_project = SERVERADDR + "assign_to_project.php";
+    public static final String delete_project = SERVERADDR + "delete_project.php";
+    public static final String delete_task = SERVERADDR + "delete_task.php";
+    public static final String edit_project = SERVERADDR + "edit_project.php";
+    public static final String edit_task = SERVERADDR + "edit_task.php";
+    public static final String get_project_detail = SERVERADDR + "get_project_detail.php";
+    public static final String get_project_tasks = SERVERADDR + "get_project_tasks.php";
+    public static final String get_project_users = SERVERADDR + "get_project_users.php";
+    public static final String get_task_details = SERVERADDR + "get_task_details.php";
+    public static final String get_task_users = SERVERADDR + "get_task_users.php";
+    public static final String get_user_projects = SERVERADDR + "get_user_projects.php";
+    public static final String new_project = SERVERADDR + "new_project.php";
+    public static final String new_task = SERVERADDR + "new_task.php";
+    public static final String unassign_from_project = SERVERADDR + "unassign_from_project.php";
+    public static final String unassign_task = SERVERADDR + "unassign_task.php";
+    public static final String login = SERVERADDR + "login.php";
 }
