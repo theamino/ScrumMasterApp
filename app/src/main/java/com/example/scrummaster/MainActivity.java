@@ -32,6 +32,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -185,9 +187,15 @@ public class MainActivity extends AppCompatActivity
                         String desc = c.getString(Constants.TAG_DESCRIPTION);
                         String createdat = c.getString(Constants.TAG_CREATIONDATE);
                         String ownerid = c.getString(Constants.TAG_OWNERID);
-                        //TODO projectList.add(new project());
                         Date crd = new Date();
                         Date lud = new Date();
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                        try {
+                            crd = format.parse(createdat);
+                            lud = format.parse(lastupdate);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                         projectList.add(new Project(name,ownerid,crd,Integer.valueOf(progress),desc,lud));
                     }
                 }
@@ -253,7 +261,13 @@ public class MainActivity extends AppCompatActivity
                         String projectid = c.getString(Constants.TAG_PROJECTID);
                         Date predictedtime = new Date();
                         Date consumedtime = new Date();
-                        //TODO taskList.add(new Task());
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                        try {
+                            predictedtime = format.parse(predictedtimestr);
+                            consumedtime = format.parse(consumedtimestr);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
                         taskList.add(new Task(taskid,title,desc,predictedtime,consumedtime,status));
                     }
                 }

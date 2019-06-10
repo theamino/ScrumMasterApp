@@ -1,11 +1,13 @@
 package com.example.scrummaster;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
@@ -14,6 +16,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -27,11 +30,22 @@ import com.example.scrummaster.Classes.Project;
 import com.example.scrummaster.Classes.Task;
 import com.example.scrummaster.Classes.User;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class ProjectManagemenetActivity extends AppCompatActivity implements UIRefresher {
 
+    static View rootView = null;
+    static String projectid="0";
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -75,6 +89,8 @@ public class ProjectManagemenetActivity extends AppCompatActivity implements UIR
                 new TaskEditAlertDialog(ProjectManagemenetActivity.this , true , uiRefresher).show();
             }
         });
+
+        projectid = getIntent().getExtras().getString(Constants.TAG_PROJECTID,"0");
 
     }
 
@@ -134,36 +150,13 @@ public class ProjectManagemenetActivity extends AppCompatActivity implements UIR
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            View rootView = null;
+
             if(getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 rootView = inflater.inflate(R.layout.fragment_project_managemenet, container, false);
                 //TextView textView = (TextView) rootView.findViewById(R.id.section_label);
                 //textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-                RecyclerView recyclerView;
-                recyclerView = rootView.findViewById(R.id.fragment_recycler);
                 //TODO : get project Tasks
-
-                new AsyncTask<Void , Void , Void>() {
-
-                    @Override
-                    protected void onPreExecute() {
-                        super.onPreExecute();
-                        List<Task> tasks = null;
-                    }
-
-                    @Override
-                    protected void onPostExecute(Void aVoid) {
-                        super.onPostExecute(aVoid);
-                    }
-
-                    @Override
-                    protected Void doInBackground(Void... voids) {
-                        return null;
-                    }
-                }.execute();
-                List<Task> tasks = null;
-                FragmentRecyclerAdapter adapter = new FragmentRecyclerAdapter(getContext(), new ArrayList<Project>(), tasks, new ArrayList<User>(), V.MainActivityRecyclerAdapter.TASK , uiRefresher);
-                recyclerView.setAdapter(adapter);
+                new LoadTasks().execute();
             } else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
                 rootView = inflater.inflate(R.layout.fragment_project_managemenet, container, false);
                 //TextView textView = (TextView) rootView.findViewById(R.id.section_label);
@@ -171,9 +164,8 @@ public class ProjectManagemenetActivity extends AppCompatActivity implements UIR
                 RecyclerView recyclerView;
                 recyclerView = rootView.findViewById(R.id.fragment_recycler);
                 //TODO : get project collaborators
-                List<User> users = null;
-                FragmentRecyclerAdapter adapter = new FragmentRecyclerAdapter(getContext() , new ArrayList<Project>() , new ArrayList<Task>() , users , V.MainActivityRecyclerAdapter.USER , uiRefresher);
-                recyclerView.setAdapter(adapter);
+                //FragmentRecyclerAdapter adapter = new FragmentRecyclerAdapter(getContext() , new ArrayList<Project>() , new ArrayList<Task>() , users , V.MainActivityRecyclerAdapter.USER , uiRefresher);
+                //recyclerView.setAdapter(adapter);
             } else {
                 rootView = inflater.inflate(R.layout.fragment_edit_project, container, false);
                 Project project = InteriorProject.getInstance().getProject();
@@ -215,6 +207,150 @@ public class ProjectManagemenetActivity extends AppCompatActivity implements UIR
         public int getCount() {
             // Show 3 total pages.
             return 3;
+        }
+    }
+
+    public class LoadTasks extends AsyncTask<Void , Void , Void> {
+
+        ProgressDialog pDialog;
+        JSONParser jParser = new JSONParser();
+        JSONArray tasks = null;
+        List<Task> taskList = new ArrayList<Task>();
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            /*pDialog = new ProgressDialog(ProjectManagemenetActivity.this);
+            pDialog.setMessage("در حال بارگذاری لطفا صبر کنید...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();*/
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            //pDialog.dismiss();
+            RecyclerView recyclerView;
+            recyclerView = rootView.findViewById(R.id.fragment_recycler);
+            FragmentRecyclerAdapter adapter = new FragmentRecyclerAdapter(ProjectManagemenetActivity.this, new ArrayList<Project>(), taskList, new ArrayList<User>(), V.MainActivityRecyclerAdapter.TASK , uiRefresher);
+            recyclerView.setAdapter(adapter);
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... strings) {
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair(Constants.TAG_PROJECTID,String.valueOf(projectid)));
+
+            JSONObject json = jParser.makeHttpRequest(Constants.get_project_users, "GET", params);
+
+            Log.d("User Tasks: ", json.toString());
+
+            try {
+                int success = json.getInt(Constants.TAG_SUCCESS);
+
+                if (success == 1) {
+
+                    tasks = json.getJSONArray(Constants.TAG_TASKS);
+                    for (int i = 0; i < tasks.length(); i++) {
+                        JSONObject c = tasks.getJSONObject(i);
+
+                        String taskid = c.getString(Constants.TAG_TASKID);
+                        String title = c.getString(Constants.TAG_TITLE);
+                        String status = c.getString(Constants.TAG_STATUS);
+                        String desc = c.getString(Constants.TAG_DESCRIPTION);
+                        String predictedtimestr = c.getString(Constants.TAG_PREDICTEDTIME);
+                        String consumedtimestr = c.getString(Constants.TAG_CONSUMEDTIME);
+                        String projectid = c.getString(Constants.TAG_PROJECTID);
+                        Date predictedtime = new Date();
+                        Date consumedtime = new Date();
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                        try {
+                            predictedtime = format.parse(predictedtimestr);
+                            consumedtime = format.parse(consumedtimestr);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        taskList.add(new Task(taskid,title,desc,predictedtime,consumedtime,status));
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+    public class LoadUsers extends AsyncTask<Void , Void , Void> {
+
+        ProgressDialog pDialog;
+        JSONParser jParser = new JSONParser();
+        JSONArray tasks = null;
+        List<Task> taskList = new ArrayList<Task>();
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            /*pDialog = new ProgressDialog(ProjectManagemenetActivity.this);
+            pDialog.setMessage("در حال بارگذاری لطفا صبر کنید...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();*/
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            //pDialog.dismiss();
+            RecyclerView recyclerView;
+            recyclerView = rootView.findViewById(R.id.fragment_recycler);
+            FragmentRecyclerAdapter adapter = new FragmentRecyclerAdapter(ProjectManagemenetActivity.this, new ArrayList<Project>(), taskList, new ArrayList<User>(), V.MainActivityRecyclerAdapter.TASK , uiRefresher);
+            recyclerView.setAdapter(adapter);
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... strings) {
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair(Constants.TAG_PROJECTID,String.valueOf(projectid)));
+
+            JSONObject json = jParser.makeHttpRequest(Constants.get_project_users, "GET", params);
+
+            Log.d("User Tasks: ", json.toString());
+
+            try {
+                int success = json.getInt(Constants.TAG_SUCCESS);
+
+                if (success == 1) {
+
+                    tasks = json.getJSONArray(Constants.TAG_TASKS);
+                    for (int i = 0; i < tasks.length(); i++) {
+                        JSONObject c = tasks.getJSONObject(i);
+
+                        String taskid = c.getString(Constants.TAG_TASKID);
+                        String title = c.getString(Constants.TAG_TITLE);
+                        String status = c.getString(Constants.TAG_STATUS);
+                        String desc = c.getString(Constants.TAG_DESCRIPTION);
+                        String predictedtimestr = c.getString(Constants.TAG_PREDICTEDTIME);
+                        String consumedtimestr = c.getString(Constants.TAG_CONSUMEDTIME);
+                        String projectid = c.getString(Constants.TAG_PROJECTID);
+                        Date predictedtime = new Date();
+                        Date consumedtime = new Date();
+                        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                        try {
+                            predictedtime = format.parse(predictedtimestr);
+                            consumedtime = format.parse(consumedtimestr);
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                        taskList.add(new Task(taskid,title,desc,predictedtime,consumedtime,status));
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
     }
 }
