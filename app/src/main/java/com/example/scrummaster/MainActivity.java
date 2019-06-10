@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity
     List<Project> projectList = new ArrayList<Project>();
     UIRefresher uiRefresher;
     FragmentRecyclerAdapter adapter;
-    String ownerid = "0";
+    public static String ownerid = "0";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity
             @Override
             public void onClick(View view) {
                 new NewProjectDialog(context, uiRefresher).show();
+                refresh();
             }
         });
 
@@ -131,6 +132,7 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void refresh() {
+        new LoadProjects().execute();
 
     }
 

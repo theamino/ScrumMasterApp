@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.scrummaster.Classes.Project;
 import com.example.scrummaster.Classes.Task;
@@ -291,6 +292,68 @@ public class ProjectManagemenetActivity extends AppCompatActivity implements UIR
             }
         }
 
+        public class EditProject extends AsyncTask<Void , Void , Void> {
+
+            ProgressDialog pDialog;
+            JSONParser jParser = new JSONParser();
+            JSONArray tasks = null;
+            String message;
+            int success;
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            /*pDialog = new ProgressDialog(context);
+            pDialog.setMessage("در حال بارگذاری لطفا صبر کنید...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();*/
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+//            pDialog.dismiss();
+//            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//            builder.setTitle("Result");
+//            builder.setMessage(message);
+//            builder.show();
+                Toast.makeText(context,message,Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            protected Void doInBackground(Void... strings) {
+                SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                List<NameValuePair> params = new ArrayList<NameValuePair>();
+                params.add(new BasicNameValuePair(Constants.TAG_PROJECTID, String.valueOf(InteriorProject.getInstance().getProject().getId())));
+                params.add(new BasicNameValuePair(Constants.TAG_PROJECTNAME, String.valueOf(InteriorProject.getInstance().getProject().getName())));
+                params.add(new BasicNameValuePair(Constants.TAG_LASTUPDATE, format.format(new Date(System.currentTimeMillis()))));
+                params.add(new BasicNameValuePair(Constants.TAG_PROGRESSPERCENT, String.valueOf(InteriorProject.getInstance().getProject().getProgress_percent())));
+                params.add(new BasicNameValuePair(Constants.TAG_DESCRIPTION, InteriorProject.getInstance().getProject().getDescription()));
+                params.add(new BasicNameValuePair(Constants.TAG_CREATIONDATE, format.format(InteriorProject.getInstance().getProject().getCreated_date())));
+
+                JSONObject json = jParser.makeHttpRequest(Constants.edit_project, "GET", params);
+
+                Log.d("Edit Project : ", InteriorProject.getInstance().getProject().getId());
+                Log.d("Edit Project : ", InteriorProject.getInstance().getProject().getName());
+                Log.d("Edit Project : ", String.valueOf(InteriorProject.getInstance().getProject().getProgress_percent()));
+                Log.d("Edit Project : ", InteriorProject.getInstance().getProject().getDescription());
+                Log.d("Edit Project : ", json.toString());
+
+                try {
+                    success = json.getInt(Constants.TAG_SUCCESS);
+
+                    if (success == 1) {
+                        message = json.getString(Constants.TAG_MESSAGE);
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                return null;
+            }
+        }
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
@@ -317,6 +380,10 @@ public class ProjectManagemenetActivity extends AppCompatActivity implements UIR
                     @Override
                     public void onClick(View v) {
                         //TODO: SEND TO PHP
+                        InteriorProject.getInstance().getProject().setName(((EditText) rootView.findViewById(R.id.project_name_fragment)).getText().toString());
+                        InteriorProject.getInstance().getProject().setDescription(((EditText) rootView.findViewById(R.id.projectDescriptionFragment)).getText().toString());
+                        InteriorProject.getInstance().getProject().setProgress_percent(Integer.valueOf(((EditText) rootView.findViewById(R.id.project_percent_fragment)).getText().toString()));
+                        new EditProject().execute();
                     }
                 });
 

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.UiThread;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -38,6 +39,7 @@ public class NewProjectDialog extends Dialog {
         this.uiRefresher = uiRefresher;
     }
     Context context;
+    Dialog d =this;
     String[] states = {"active" , "to do" , "in progress" ,  "review" , "done" , "deactivated"};
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,33 +78,34 @@ public class NewProjectDialog extends Dialog {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pDialog = new ProgressDialog(context);
+            /*pDialog = new ProgressDialog(context);
             pDialog.setMessage("در حال بارگذاری لطفا صبر کنید...");
             pDialog.setIndeterminate(false);
             pDialog.setCancelable(false);
-            pDialog.show();
+            pDialog.show();*/
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            pDialog.dismiss();
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
-            builder.setTitle("Result");
-            builder.setMessage(message);
-            builder.show();
-
+//            pDialog.dismiss();
+//            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+//            builder.setTitle("Result");
+//            builder.setMessage(message);
+//            builder.show();
+            d.cancel();
         }
 
         @Override
         protected Void doInBackground(Void... strings) {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             List<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair(Constants.TAG_PROJECTNAME, String.valueOf(project.getName())));
-            params.add(new BasicNameValuePair(Constants.TAG_OWNERID, String.valueOf(InteriorUser.getInstance().getUser().getId())));
-            params.add(new BasicNameValuePair(Constants.TAG_LASTUPDATE, (new Date(System.currentTimeMillis())).toString()));
+            params.add(new BasicNameValuePair(Constants.TAG_OWNERID, MainActivity.ownerid));
+            params.add(new BasicNameValuePair(Constants.TAG_LASTUPDATE, format.format(new Date(System.currentTimeMillis()))));
             params.add(new BasicNameValuePair(Constants.TAG_PROGRESSPERCENT, String.valueOf(project.getProgress_percent())));
             params.add(new BasicNameValuePair(Constants.TAG_DESCRIPTION, project.getDescription()));
-            params.add(new BasicNameValuePair(Constants.TAG_CREATIONDATE, (new Date(System.currentTimeMillis())).toString()));
+            params.add(new BasicNameValuePair(Constants.TAG_CREATIONDATE, format.format(new Date(System.currentTimeMillis()))));
 
             JSONObject json = jParser.makeHttpRequest(Constants.new_project, "GET", params);
 

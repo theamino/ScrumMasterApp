@@ -1,22 +1,37 @@
 package com.example.scrummaster;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.scrummaster.Classes.Project;
 import com.example.scrummaster.Classes.Task;
 import com.example.scrummaster.Classes.User;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
+import static com.example.scrummaster.ProjectManagemenetActivity.projectid;
 
 public class FragmentRecyclerAdapter extends RecyclerView.Adapter {
 
@@ -71,11 +86,13 @@ public class FragmentRecyclerAdapter extends RecyclerView.Adapter {
             masterDetailImageViewHolder.masterTextView.setText(projectList.get(i).getName());
             masterDetailImageViewHolder.detailTextView.setText("Owner : " + projectList.get(i).getOwner_username());
             masterDetailImageViewHolder.itemView.setOnClickListener(onClick(i));
+            masterDetailImageViewHolder.itemView.setOnLongClickListener(onLongClick(i));
         } else if (type == V.MainActivityRecyclerAdapter.TASK) {
             masterDetailImageViewHolder.imageView.setImageResource(R.drawable.scrum_master);
             masterDetailImageViewHolder.masterTextView.setText(taskList.get(i).getDescription());
             masterDetailImageViewHolder.detailTextView.setText("Status : " + taskList.get(i).getStatus());
             masterDetailImageViewHolder.itemView.setOnClickListener(onClick(i));
+            masterDetailImageViewHolder.itemView.setOnLongClickListener(onLongClick(i));
         } else if (type == V.MainActivityRecyclerAdapter.USER) {
             masterDetailImageViewHolder.imageView.setImageResource(R.drawable.scrum_master);
             masterDetailImageViewHolder.masterTextView.setText(userList.get(i).getUser_name());
@@ -103,6 +120,68 @@ public class FragmentRecyclerAdapter extends RecyclerView.Adapter {
             }
         };
     }
+
+    private View.OnLongClickListener onLongClick(final int i)
+    {
+        return new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                if(type == V.MainActivityRecyclerAdapter.PROJECT) {
+                    new DeleteProject().execute(new String[]{projectList.get(i).getId()});
+                }
+                return false;
+            }
+        };
+    }
+
+    public class DeleteProject extends AsyncTask<String , String , String > {
+
+        ProgressDialog pDialog;
+        JSONParser jParser = new JSONParser();
+        int success;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            /*pDialog = new ProgressDialog(ProjectManagemenetActivity.this);
+            pDialog.setMessage("در حال بارگذاری لطفا صبر کنید...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();*/
+        }
+
+        @Override
+        protected void onPostExecute(String aVoid) {
+            super.onPostExecute(aVoid);
+            //pDialog.dismiss();
+            if(success==1)
+            {
+                Toast.makeText(context,"Project Deleted Please refresh",Toast.LENGTH_LONG).show();
+            }
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair(Constants.TAG_PROJECTID, strings[0]));
+
+            JSONObject json = jParser.makeHttpRequest(Constants.delete_project, "GET", params);
+
+            Log.d("Project_id", projectid);
+            Log.d("Project Tasks: ", json.toString());
+
+            try {
+                success = json.getInt(Constants.TAG_SUCCESS);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+    }
+
+
+
 
     private class MasterDetailImageViewHolder extends RecyclerView.ViewHolder {
 

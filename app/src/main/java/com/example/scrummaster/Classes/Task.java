@@ -8,6 +8,18 @@ public class Task {
     Date predicted_time;
     Date consumed_days;
     String status;
+    int projectID;
+
+    public Task(String description, String title, String taskid, Date predicted_time, Date consumed_days, String status, int projectID) {
+        this.description = description;
+        this.title = title;
+        this.taskid = taskid;
+        this.predicted_time = predicted_time;
+        this.consumed_days = consumed_days;
+        this.status = status;
+        this.projectID = projectID;
+    }
+
     //list tags
     List<User> members;
     //sprint
@@ -32,6 +44,17 @@ public class Task {
         this.members = members;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public String getTaskid() {
+        return taskid;
+    }
+
+    public int getProjectID() {
+        return projectID;
+    }
 
     public String getDescription() {
         return description;

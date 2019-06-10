@@ -6,7 +6,8 @@ import java.util.Date;
 import java.util.List;
 
 public class User {
-    String id,first_name , last_name , user_name,
+    String userID;
+    String first_name , last_name , user_name,
     password , description;
     Date lastOnlineDate;
     float rate;
@@ -18,12 +19,12 @@ public class User {
     List<Project> collaboration_project_list;
     List<Project> management_project_list;
 
-    public String getFirst_name() {
-        return first_name;
+    public String getID() {
+        return userID;
     }
 
-    public String getId() {
-        return id;
+    public String getFirst_name() {
+        return first_name;
     }
 
     public String getLast_name() {
@@ -78,7 +79,14 @@ public class User {
         return management_project_list;
     }
 
-    public User(String first_name, String last_name, String user_name, String password, String description, Date lastOnlineDate, float rate, Date birthDate, ContactsContract.CommonDataKinds.Email email, String phone_number, String gender, String country, List<Project> collaboration_project_list, List<Project> management_project_list) {
+    public User(String userID, String first_name, String last_name) {
+        this.userID = userID;
+        this.first_name = first_name;
+        this.last_name = last_name;
+    }
+
+    public User(String userID , String first_name, String last_name, String user_name, String password, String description, Date lastOnlineDate, float rate, Date birthDate, ContactsContract.CommonDataKinds.Email email, String phone_number, String gender, String country, List<Project> collaboration_project_list, List<Project> management_project_list) {
+        this.userID = userID;
         this.first_name = first_name;
         this.last_name = last_name;
         this.user_name = user_name;
@@ -93,11 +101,5 @@ public class User {
         this.country = country;
         this.collaboration_project_list = collaboration_project_list;
         this.management_project_list = management_project_list;
-    }
-
-    public User(String id,String first_name, String last_name) {
-        this.id = id;
-        this.first_name = first_name;
-        this.last_name = last_name;
     }
 }
