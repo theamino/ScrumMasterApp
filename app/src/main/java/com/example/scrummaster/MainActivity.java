@@ -178,14 +178,17 @@ public class MainActivity extends AppCompatActivity
                     for (int i = 0; i < projects.length(); i++) {
                         JSONObject c = projects.getJSONObject(i);
 
-                        String taskid = c.getString(Constants.TAG_TASKID);
-                        String title = c.getString(Constants.TAG_TITLE);
-                        String status = c.getString(Constants.TAG_STATUS);
-                        String desc = c.getString(Constants.TAG_DESCRIPTION);
-                        String predictedtime = c.getString(Constants.TAG_PREDICTEDTIME);
-                        String consumedtime = c.getString(Constants.TAG_CONSUMEDTIME);
                         String projectid = c.getString(Constants.TAG_PROJECTID);
+                        String name = c.getString(Constants.TAG_PROJECTNAME);
+                        String lastupdate = c.getString(Constants.TAG_LASTUPDATE);
+                        String progress = c.getString(Constants.TAG_PROGRESSPERCENT);
+                        String desc = c.getString(Constants.TAG_DESCRIPTION);
+                        String createdat = c.getString(Constants.TAG_CREATIONDATE);
+                        String ownerid = c.getString(Constants.TAG_OWNERID);
                         //TODO projectList.add(new project());
+                        Date crd = new Date();
+                        Date lud = new Date();
+                        projectList.add(new Project(name,ownerid,crd,Integer.valueOf(progress),desc,lud));
                     }
                 }
             } catch (JSONException e) {

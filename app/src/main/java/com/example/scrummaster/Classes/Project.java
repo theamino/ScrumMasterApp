@@ -24,6 +24,15 @@ public class Project {
         this.last_update = last_update;
     }
 
+    public Project(String name, String owner_username, Date created_date, int progress_percent, String description, Date last_update) {
+        this.name = name;
+        this.owner_username = owner_username;
+        this.created_date = created_date;
+        this.tasks = tasks;
+        this.progress_percent = progress_percent;
+        this.description = description;
+        this.last_update = last_update;
+    }
     public void setName(String name) {
         this.name = name;
     }
