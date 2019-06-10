@@ -47,6 +47,9 @@ public class ProjectManagemenetActivity extends AppCompatActivity implements UIR
     static View rootView = null;
     static String projectid="0";
     static  Context context;
+    static RecyclerView mainRecyclerView;
+    static RecyclerView.LayoutManager layoutManager;
+    FragmentRecyclerAdapter adapter;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -176,6 +179,10 @@ public class ProjectManagemenetActivity extends AppCompatActivity implements UIR
                 RecyclerView recyclerView;
                 recyclerView = rootView.findViewById(R.id.fragment_recycler);
                 FragmentRecyclerAdapter adapter = new FragmentRecyclerAdapter(getContext(), new ArrayList<Project>(), taskList, new ArrayList<User>(), V.MainActivityRecyclerAdapter.TASK , uiRefresher);
+                recyclerView.setAdapter(adapter);
+
+                layoutManager = new LinearLayoutManager(context);
+                recyclerView.setLayoutManager(layoutManager);
                 recyclerView.setAdapter(adapter);
 
             }

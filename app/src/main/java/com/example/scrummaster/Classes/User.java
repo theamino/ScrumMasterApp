@@ -22,6 +22,10 @@ public class User {
         return first_name;
     }
 
+    public String getId() {
+        return id;
+    }
+
     public String getLast_name() {
         return last_name;
     }
