@@ -90,7 +90,9 @@ public class FragmentRecyclerAdapter extends RecyclerView.Adapter {
             public void onClick(View v) {
                 if(type == V.MainActivityRecyclerAdapter.PROJECT) {
                     InteriorProject.getInstance().setProject(projectList.get(i));
-                    context.startActivity(new Intent(context.getApplicationContext() , ProjectManagemenetActivity.class));
+                    Intent x = new Intent(context.getApplicationContext(), ProjectManagemenetActivity.class);
+                    x.putExtra(Constants.TAG_PROJECTID,projectList.get(i).getId());
+                    context.startActivity(x);
                 } else if (type == V.MainActivityRecyclerAdapter.TASK) {
                     InteriorTask.getInstance().setTask(taskList.get(i));
                     new TaskEditAlertDialog(context, false , uiRefresher).show();

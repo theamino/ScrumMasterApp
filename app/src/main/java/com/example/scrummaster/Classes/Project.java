@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 public class Project {
+    private String id;
     private String name;
     private String owner_username;
     private Date created_date;
@@ -14,7 +15,8 @@ public class Project {
     String description;
     Date last_update;
 
-    public Project(String name, String owner_username, Date created_date, List<Task> tasks, int progress_percent, String description, Date last_update) {
+    public Project(String id,String name, String owner_username, Date created_date, List<Task> tasks, int progress_percent, String description, Date last_update) {
+        this.id = id;
         this.name = name;
         this.owner_username = owner_username;
         this.created_date = created_date;
@@ -24,7 +26,8 @@ public class Project {
         this.last_update = last_update;
     }
 
-    public Project(String name, String owner_username, Date created_date, int progress_percent, String description, Date last_update) {
+    public Project(String id,String name, String owner_username, Date created_date, int progress_percent, String description, Date last_update) {
+        this.id = id;
         this.name = name;
         this.owner_username = owner_username;
         this.created_date = created_date;
@@ -43,6 +46,10 @@ public class Project {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getName() {

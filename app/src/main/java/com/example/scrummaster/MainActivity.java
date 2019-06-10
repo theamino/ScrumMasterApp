@@ -196,7 +196,7 @@ public class MainActivity extends AppCompatActivity
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-                        projectList.add(new Project(name,ownerid,crd,Integer.valueOf(progress),desc,lud));
+                        projectList.add(new Project(projectid,name,ownerid,crd,Integer.valueOf(progress),desc,lud));
                     }
                 }
             } catch (JSONException e) {

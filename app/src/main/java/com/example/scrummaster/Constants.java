@@ -25,6 +25,8 @@ public class Constants {
     public static final String TAG_TASK = "task";
     public static final String TAG_USERS = "users";
     public static final String TAG_SUCCESS = "success";
+    public static final String TAG_FIRSTNAME = "first_name";
+    public static final String TAG_LASTNAME = "last_name";
 
     //URLs
     public static final  String SERVERADDR = "http://192.168.43.17/";

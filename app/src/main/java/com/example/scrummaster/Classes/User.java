@@ -6,7 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 public class User {
-    String first_name , last_name , user_name,
+    String id,first_name , last_name , user_name,
     password , description;
     Date lastOnlineDate;
     float rate;
@@ -89,5 +89,11 @@ public class User {
         this.country = country;
         this.collaboration_project_list = collaboration_project_list;
         this.management_project_list = management_project_list;
+    }
+
+    public User(String id,String first_name, String last_name) {
+        this.id = id;
+        this.first_name = first_name;
+        this.last_name = last_name;
     }
 }
