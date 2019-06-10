@@ -4,7 +4,7 @@ import java.util.Date;
 import java.util.List;
 
 public class Task {
-    String description;
+    String description,title,taskid;
     Date predicted_time;
     Date consumed_days;
     String status;
@@ -13,14 +13,18 @@ public class Task {
     //sprint
 
 
-    public Task(String description, Date predicted_time, Date consumed_days, String status) {
+    public Task(String taskid,String title,String description, Date predicted_time, Date consumed_days, String status) {
+        this.taskid = taskid;
+        this.title = title;
         this.description = description;
         this.predicted_time = predicted_time;
         this.consumed_days = consumed_days;
         this.status = status;
     }
 
-    public Task(String description, Date predicted_time, Date consumed_days, String status, List<User> members) {
+    public Task(String taskid,String title,String description, Date predicted_time, Date consumed_days, String status, List<User> members) {
+        this.taskid = taskid;
+        this.title = title;
         this.description = description;
         this.predicted_time = predicted_time;
         this.consumed_days = consumed_days;

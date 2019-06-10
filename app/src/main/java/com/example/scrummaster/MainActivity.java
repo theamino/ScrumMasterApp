@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -26,6 +27,7 @@ import com.example.scrummaster.Classes.Task;
 import com.example.scrummaster.Classes.User;
 
 import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -42,6 +44,8 @@ public class MainActivity extends AppCompatActivity
     List<Project> projectList = new ArrayList<Project>();
     UIRefresher uiRefresher;
     FragmentRecyclerAdapter adapter;
+    String ownerid = "0";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,7 +58,7 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new NewProjectDialog(context , uiRefresher).show();
+                new NewProjectDialog(context, uiRefresher).show();
             }
         });
 
@@ -66,6 +70,8 @@ public class MainActivity extends AppCompatActivity
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        ownerid = getIntent().getExtras().getString(V.Extras.userID,"0");
     }
 
     @Override
@@ -126,19 +132,29 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    public class LoadProjects extends AsyncTask<Void , Void , Void> {
+    public class LoadProjects extends AsyncTask<Void, Void, Void> {
 
+        ProgressDialog pDialog;
+        JSONParser jParser = new JSONParser();
+        JSONArray projects = null;
         List<Project> projectList = new ArrayList<Project>();
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            pDialog = new ProgressDialog(MainActivity.this);
+            pDialog.setMessage("در حال بارگذاری لطفا صبر کنید...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();
+            projectList.clear();
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            adapter = new FragmentRecyclerAdapter(context , projectList , new ArrayList<Task>() , new ArrayList<User>() , V.MainActivityRecyclerAdapter.PROJECT , uiRefresher);
+            pDialog.dismiss();
+            adapter = new FragmentRecyclerAdapter(context, projectList, new ArrayList<Task>(), new ArrayList<User>(), V.MainActivityRecyclerAdapter.PROJECT, uiRefresher);
             layoutManager = new LinearLayoutManager(context);
             mainRecyclerView.setLayoutManager(layoutManager);
             mainRecyclerView.setAdapter(adapter);
@@ -146,23 +162,61 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected Void doInBackground(Void... strings) {
-            projectList.add(new Project("aminoz" , "amin" , new Date(2009 , 10 ,13) , new ArrayList<Task>() , 50 , "hellow" , new Date()));
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            params.add(new BasicNameValuePair(Constants.TAG_OWNERID,String.valueOf(ownerid)));
+
+            JSONObject json = jParser.makeHttpRequest(Constants.get_user_projects, "GET", params);
+
+            Log.d("User Projects: ", json.toString());
+
+            try {
+                int success = json.getInt(Constants.TAG_SUCCESS);
+
+                if (success == 1) {
+
+                    projects = json.getJSONArray(Constants.TAG_PROJECTS);
+                    for (int i = 0; i < projects.length(); i++) {
+                        JSONObject c = projects.getJSONObject(i);
+
+                        String taskid = c.getString(Constants.TAG_TASKID);
+                        String title = c.getString(Constants.TAG_TITLE);
+                        String status = c.getString(Constants.TAG_STATUS);
+                        String desc = c.getString(Constants.TAG_DESCRIPTION);
+                        String predictedtime = c.getString(Constants.TAG_PREDICTEDTIME);
+                        String consumedtime = c.getString(Constants.TAG_CONSUMEDTIME);
+                        String projectid = c.getString(Constants.TAG_PROJECTID);
+                        //TODO projectList.add(new project());
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             return null;
         }
     }
 
     public class LoadTasks extends AsyncTask<Void , Void , Void> {
 
+        ProgressDialog pDialog;
+        JSONParser jParser = new JSONParser();
+        JSONArray tasks = null;
         List<Task> taskList= new ArrayList<Task>();
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            pDialog = new ProgressDialog(MainActivity.this);
+            pDialog.setMessage("در حال بارگذاری لطفا صبر کنید...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();
+            taskList.clear();
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            pDialog.dismiss();
             adapter = new FragmentRecyclerAdapter(context , new ArrayList<Project>() , taskList , new ArrayList<User>() , V.MainActivityRecyclerAdapter.TASK , uiRefresher);
             layoutManager = new LinearLayoutManager(context);
             mainRecyclerView.setLayoutManager(layoutManager);
@@ -171,90 +225,40 @@ public class MainActivity extends AppCompatActivity
 
         @Override
         protected Void doInBackground(Void... strings) {
-            taskList.add(new Task("aminoz"  , new Date(2009 , 10 ,13) , new Date(2009 , 10 ,13) , "hellow"));
-            return null;
-        }
-    }
-
-    ProgressDialog pDialog;
-    JSONParser jParser = new JSONParser();
-    JSONArray units = null;
-    private ArrayList<Project> itemList;
-
-    class LoadAllUnits extends AsyncTask<String, String, String> {
-
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            pDialog = new ProgressDialog(MainActivity.this);
-            pDialog.setMessage("در حال بارگذاری لیست واحد ها لطفا صبر کنید...");
-            pDialog.setIndeterminate(false);
-            pDialog.setCancelable(false);
-            pDialog.show();
-        }
-
-
-        protected String doInBackground(String... args) {
             List<NameValuePair> params = new ArrayList<NameValuePair>();
-            //JSONObject json = jParser.makeHttpRequest(Constants.url_all_units, "GET", params);
+            params.add(new BasicNameValuePair(Constants.TAG_USERID,String.valueOf(ownerid)));
 
-            //Log.d("All Units: ", json.toString());
+            JSONObject json = jParser.makeHttpRequest(Constants.get_user_tasks, "GET", params);
 
-            /*try {
+            Log.d("User Tasks: ", json.toString());
+
+            try {
                 int success = json.getInt(Constants.TAG_SUCCESS);
 
                 if (success == 1) {
 
-                    units = json.getJSONArray(Constants.TAG_UNITS);
-                    for (int i = 0; i < units.length(); i++) {
-                        JSONObject c = units.getJSONObject(i);
+                    tasks = json.getJSONArray(Constants.TAG_TASKS);
+                    for (int i = 0; i < tasks.length(); i++) {
+                        JSONObject c = tasks.getJSONObject(i);
 
-                        String unitid = c.getString(Constants.TAG_UNITID);
-                        String num = c.getString(Constants.TAG_NUM);
-                        String voipnum = c.getString(Constants.TAG_VOIPNUM);
-                        String owner = c.getString(Constants.TAG_OWNER);
-                        //if (!unitid.equals(myunitid))
-                        {
-                           // itemList.add(new Project(Integer.parseInt(unitid), Integer.parseInt(num), owner, voipnum));
-                        }
+                        String taskid = c.getString(Constants.TAG_TASKID);
+                        String title = c.getString(Constants.TAG_TITLE);
+                        String status = c.getString(Constants.TAG_STATUS);
+                        String desc = c.getString(Constants.TAG_DESCRIPTION);
+                        String predictedtimestr = c.getString(Constants.TAG_PREDICTEDTIME);
+                        String consumedtimestr = c.getString(Constants.TAG_CONSUMEDTIME);
+                        String projectid = c.getString(Constants.TAG_PROJECTID);
+                        Date predictedtime = new Date();
+                        Date consumedtime = new Date();
+                        //TODO taskList.add(new Task());
+                        taskList.add(new Task(taskid,title,desc,predictedtime,consumedtime,status));
                     }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-            }*/
-
+            }
             return null;
         }
-
-
-        protected void onPostExecute(String file_url) {
-            pDialog.dismiss();
-            if (itemList.size() > 0) {
-                runOnUiThread(new Runnable() {
-                    public void run() {
-                        //adapter = new MyRecyclerAdapter(itemList, InterCallList.this);
-                        //list.setAdapter(adapter);
-                        adapter.notifyDataSetChanged();
-                    }
-                });
-            } else {
-//        finish();
-                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-                builder.setTitle("خطایی رخ داد");
-                builder.setMessage("واحدی یافت نشد. در صورت تکرار به مدیر ساختمان اطلاع دهید");
-                builder.setCancelable(false);
-                builder.setPositiveButton("تایید", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        finish();
-                    }
-                });
-                builder.create();
-                builder.show();
-            }
-        }
-
     }
-
+    //taskList.add(new Task("aminoz"  , new Date(2009 , 10 ,13) , new Date(2009 , 10 ,13) , "hellow"));
 }

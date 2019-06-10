@@ -74,16 +74,21 @@ public class StartActivity extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             pDialog.dismiss();
-            if (b) {
-                Intent intent = new Intent(StartActivity.this , MainActivity.class);
-                intent.putExtra(V.Extras.userID , userId);
-                startActivity(intent);
-            } else {
-                AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-                builder.setTitle("Error");
-                builder.setMessage("Username or Password wrong!");
-                builder.show();
-            }
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (b) {
+                        Intent intent = new Intent(StartActivity.this , MainActivity.class);
+                        intent.putExtra(V.Extras.userID , userId);
+                        startActivity(intent);
+                    } else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(StartActivity.this);
+                        builder.setTitle("خطا");
+                        builder.setMessage("نام کاربری یا رمز عبور اشتباه است");
+                        builder.show();
+                    }
+                }
+            });
         }
 
         @Override
@@ -94,7 +99,7 @@ public class StartActivity extends AppCompatActivity {
 
             JSONObject json = jParser.makeHttpRequest(Constants.login , "GET", params);
 
-            Log.d("Project Tasks: ", json.toString());
+            Log.d("Login Result: ", json.toString());
 
             try {
                 int success = json.getInt(Constants.TAG_SUCCESS);
@@ -104,9 +109,9 @@ public class StartActivity extends AppCompatActivity {
 
                     for (int i = 0; i < tasks.length(); i++) {
                         JSONObject c = tasks.getJSONObject(i);
-                        userId = c.getString(Constants.TAG_USERID);
-                        //TODO taskList.add(new Task());
+                        userId = c.getString(Constants.TAG_ID);
                     }
+                    b=true;
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
